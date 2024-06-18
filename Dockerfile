@@ -7,34 +7,12 @@ FROM build-base-image AS python-builder
 # Install dependencies for building Python
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y \
-#    libncurses5-dev \
-#    libncursesw5-dev \
-#    libreadline-dev \
-#    libsqlite3-dev \
-#    libgdbm-dev \
-#    libdb5.3-dev \
-#    libbz2-dev \
-#    libexpat1-dev \
-#    liblzma-dev \
-#    tk-dev \
-#    libncursesw5-dev \
-#    libxml2-dev \
-#    libxmlsec1-dev \
-#    liblzma-dev \
-#    build-essential \
-#    wget \
-#    curl \
-#    llvm \
-#    xz-utils \
-#    tk-dev \
     libffi-dev \
     libssl-dev \
     zlib1g-dev \
-    cmake \
-    make && \
+    # cmake can be removed after bm:2024:1002
+    cmake && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-
 
 # Download and extract Python source
 RUN cd / && git clone https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git
@@ -58,6 +36,6 @@ FROM runtime-base-image
 
 COPY --from=python-builder /opt/python /opt/python
 
-# Test install aiida-core
-RUN /opt/python/bin/python -m pip install aiida-core
-
+ENV PATH=/opt/python/bin:${PATH}
+ENV LD_LIBRARY_PATH=/opt/python/lib:${LD_LIBRARY_PATH}
+ENV C_INCLUDE_PATH=/opt/python/include:${C_INCLUDE_PATH}

@@ -6,12 +6,6 @@ variable "ORGANIZATION" {
     default = "cnts4sci"
 }
 
-variable "BULID_BASE_IMAGE" {
-}
-
-variable "RUNTIME_BASE_IMAGE" {
-}
-
 variable "PYTHON_VERSION" {
 }
 
@@ -34,8 +28,8 @@ target "python" {
     inherits = ["python-meta"]
     context = "."
     contexts = {
-        build-base-image = "docker-image://${BUILD_BASE_IMAGE}"
-        runtime-base-image = "docker-image://${RUNTIME_BASE_IMAGE}"
+        build-base-image = "docker-image://ghcr.io/cnts4sci/bm:2024.1001"
+        runtime-base-image = "docker-image://ghcr.io/cnts4sci/bm:2024.1001"
     }
     args = {
       "PYTHON_VERSION" = "${PYTHON_VERSION}"
