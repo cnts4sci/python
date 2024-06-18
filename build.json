@@ -1,0 +1,13 @@
+{
+    "variable": {
+        "BUILD_BASE_IMAGE": {
+            "default": "ghcr.io/cnts4sci/bm:edge"
+        },
+        "RUNTIME_BASE_IMAGE": {
+            "default": "docker.io/phusion/baseimage:focal-1.2.0"
+        },
+        "PYTHON_VERSION": {
+            "default": "3.9.17"
+        }
+    }
+}
