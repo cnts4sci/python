@@ -1,0 +1,55 @@
+---
+name: Test newly built images
+
+on:
+    workflow_call:
+        inputs:
+            runsOn:
+                description: GitHub Actions Runner image
+                required: true
+                type: string
+            image:
+                description: Image built in build step
+                required: true
+                type: string
+            integration:
+                description: Run integration tests
+                required: false
+                type: boolean
+
+jobs:
+
+    test:
+        name: ${{ inputs.integration && inputs.runsOn }}
+        runs-on: ${{ inputs.runsOn }}
+        timeout-minutes: 20
+
+        steps:
+
+            - name: Checkout Repo ⚡️
+              uses: actions/checkout@v4
+
+            - name: Login to GitHub Container Registry 🔑
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Run container checking libraries exist in the container
+              run: |
+                docker run --rm ${{ inputs.image }} /bin/bash -c "which python" >> /tmp/cat-output.txt
+                docker run --rm ${{ inputs.image }} /bin/bash -c "which pip3" >> /tmp/cat-output.txt
+                if cat /tmp/cat-output.txt | grep -q "/opt/python/bin/python"; then
+                  echo "python found"
+                else
+                  echo "python not found"
+                  exit 1
+                fi
+
+                if cat /tmp/cat-output.txt | grep -q "/opt/python/bin/pip3"; then
+                  echo "pip3 found"
+                else
+                  echo "pip3 not found"
+                  exit 1
+                fi
