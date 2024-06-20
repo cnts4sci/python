@@ -19,6 +19,15 @@ RUN cd / && git clone https://github.com/python-cmake-buildsystem/python-cmake-b
 
 WORKDIR /python-build
 
+# Build a static sqlite3 lib
+RUN wget -c -O sqlite.tar.gz https://www.sqlite.org/2024/sqlite-autoconf-3460000.tar.gz && \
+    mkdir -p sqlite && \
+    tar xf sqlite.tar.gz -C sqlite --strip-components=1 && \
+    cd sqlite && \
+    ./configure CPPFLAGS="$CPPFLAGS -fPIC" -enable-static --disable-shared && \
+    make && \
+    make install
+
 ARG PYTHON_VERSION
 
 RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/python \
