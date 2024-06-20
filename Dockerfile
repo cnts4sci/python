@@ -29,7 +29,8 @@ RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/python \
     make -j10 && \
     make install
 
-RUN /opt/python/bin/python -m ensurepip --upgrade
+RUN /opt/python/bin/python -m ensurepip --upgrade && \
+    ln -s /opt/python/bin/pip3 /opt/python/bin/pip
 
 # Move binaries to a small image to reduce the size
 FROM runtime-base-image
